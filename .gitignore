@@ -2,9 +2,7 @@
 
 # create react app
 todoreact/node_modules
-todoreact/.DS_Store 
 todoreact/build
-todoreact/npm-debug.log*
 
 # virtualenv
 todoenv
@@ -17,5 +15,6 @@ __pycache__
 # misc
 .DS_Store
 db.sqlite3
+npm-debug.log*
 
 
