@@ -12,7 +12,6 @@ class TodoViewSet(viewsets.ModelViewSet):
     # "Returns a QuerySet that will “follow” foreign-key relationships, selecting additional
     # related-object data when it executes its query"
     queryset = Todo.objects.select_related('category')
-    print(queryset)
     serializer_class = TodoSerializer
 
 
