@@ -3,6 +3,10 @@ from todo.serializers import TodoSerializer, CategorySerializer
 from todo.models import Todo, Category
 
 
+# see https://www.django-rest-framework.org/tutorial/1-serialization/
+# and https://www.django-rest-framework.org/tutorial/2-requests-and-responses/
+# for how to write the views by hand without the shortcuts that ModelViewSet provides
+
 class TodoViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows todos to be viewed or edited.

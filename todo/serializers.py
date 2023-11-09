@@ -2,6 +2,9 @@ from rest_framework import serializers
 from todo.models import Todo, Category
 
 
+# using ModelSerializer means we don't need to add create() and update() methods by hand
+# Also gives an automatically determined set of fields.
+
 class TodoSerializer(serializers.ModelSerializer):
     # sorts out the value of category as a foreign key - gets category.text instead of a number
     # StringRelatedField used to represent the target of the relationship using its __str__ method
