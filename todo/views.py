@@ -7,7 +7,12 @@ class TodoViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows todos to be viewed or edited.
     """
-    queryset = Todo.objects.all()
+    # Changed from .all() to .select_related('category') to reduce the number of queries
+    # See https://docs.djangoproject.com/en/4.2/ref/models/querysets/#select-related
+    # "Returns a QuerySet that will “follow” foreign-key relationships, selecting additional
+    # related-object data when it executes its query"
+    queryset = Todo.objects.select_related('category')
+    print(queryset)
     serializer_class = TodoSerializer
 
 
