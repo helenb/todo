@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import api from '../apis/api';
+import { postTodo, putToggleDone, getTodos } from '../apis/todo';
+import { getCategories } from '../apis/categories';
 import Todo from './Todo';
 import AddTodo from './AddTodo';
 
@@ -8,63 +9,55 @@ const TodoPage = () => {
     const [todos, setTodos] = useState([]);
     const [categories, setCategories] = useState([]);
     const [showConfirmTodoText, setShowConfirmTodoText] = useState(false);
+    // move this to AddTodo
+    // add onSubmit function there
     const [newTodoValue, setNewTodoValue] = useState({
         text: '',
         dueDate: new Date().toLocaleDateString('en-CA'),
-        category: 2,
+        category: null,
     });
+    const [toDoAdded, setToDoAdded] = useState(false);
+
     useEffect(() => {
-        getTodos();
+        updateTodos();
+        updateCategories();
     }, []);
 
     useEffect(() => {
-        getCategories();
-    }, []);
+        setShowConfirmTodoText(true);
+        setTimeout(() => {
+            setShowConfirmTodoText(false);
+            setToDoAdded(false);
+        }, 3000);
+    }, [toDoAdded]);
 
-    const getTodos = async () => {
-        const response = await api.get('/todos/');
+    const updateTodos = async () => {
+        const response = await getTodos();
         setTodos(response.data);
     };
 
-    const getCategories = async () => {
-        const response = await api.get('/categories/');
+    const updateCategories = async () => {
+        const response = await getCategories();
         setCategories(response.data);
+    };
+
+    const addToDoCallback = () => {
+        updateTodos();
+        setToDoAdded(true);
     };
 
     const addTodo = async (e) => {
         e.preventDefault();
-        api.post('/todos/', {
-            text: newTodoValue.text,
-            due_date: newTodoValue.dueDate,
-            done: false,
-            category: newTodoValue.category,
-        }).then(
-            () => {
-                getTodos();
-                setShowConfirmTodoText(true);
-                setTimeout(() => {
-                    setShowConfirmTodoText(false);
-                }, 3000);
-            },
-            (error) => {
-                console.error(error);
-            },
-        );
+        postTodo(newTodoValue, addToDoCallback);
+    };
+
+    const toggleDoneCallback = () => {
+        updateTodos();
     };
 
     const toggleDone = async (item, e) => {
         e.preventDefault();
-        api.put(`/todos/${item.id}/`, {
-            done: item.done ? false : true,
-            text: item.text,
-            category: item.category,
-        })
-            .then(() => {
-                getTodos();
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        putToggleDone(item, toggleDoneCallback);
     };
 
     const toDosMarkup = todos.map((item) => {

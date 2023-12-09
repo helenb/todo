@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../apis/api';
+import { postCategories, getCategories } from '../apis/categories';
 
 import AddCategory from './AddCategory';
 
@@ -8,44 +9,34 @@ const CategoryPage = () => {
     const [newCategoryValue, setNewCategoryValue] = useState('');
     const [showConfirmCagtegoryText, setShowConfirmCategoryText] =
         useState(false);
+    const [categoryAdded, setCategoryAdded] = useState(false);
 
     useEffect(() => {
-        getCategories();
+        updateCategories();
     }, []);
 
-    const getCategories = async () => {
-        const response = await api.get('/categories/');
+    useEffect(() => {
+        setShowConfirmCategoryText(true);
+        setTimeout(() => {
+            setShowConfirmCategoryText(false);
+            setCategoryAdded(false);
+        }, 3000);
+    }, [categoryAdded]);
+
+    const updateCategories = async () => {
+        const response = await getCategories();
         setCategories(response.data);
+    };
+
+    const addCategoryCallback = () => {
+        updateCategories();
+        setCategoryAdded(true);
     };
 
     const addCategory = async (e) => {
         e.preventDefault();
-        api.post('/categories/', {
-            text: newCategoryValue,
-        })
-            .then(() => {
-                getCategories();
-                setShowConfirmCategoryText(true);
-                setTimeout(() => {
-                    setShowConfirmCategoryText(false);
-                }, 3000);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        postCategories(newCategoryValue, addCategoryCallback);
     };
-
-    // from testing
-    // const updateCategory = async () => {
-    //     console.log('updateCategory method');
-    //     api.put('/categories/1/', { text: 'changing from start' })
-    //         .then(() => {
-    //             console.log('posted');
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-    // };
 
     const categoriesMarkup = categories.map((category, id) => {
         return (
