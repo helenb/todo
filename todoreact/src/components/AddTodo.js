@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 export const AddTodo = ({
     addTodo,
@@ -24,6 +25,25 @@ export const AddTodo = ({
             [e.target.name]: value,
         });
     };
+
+    // check there are categories before rendering
+    if (categories.length === 0) {
+        return (
+            <>
+                <h2>Add a new todo item</h2>
+                <p>
+                    You need to{' '}
+                    <Link to={`../categories/`}>add a category</Link> before you
+                    can add a new todo item.
+                </p>
+            </>
+        );
+    }
+
+    // check there is a category in the newToDoValue before rendering
+    if (newTodoValue.category === null) {
+        newTodoValue.category = categories[0].id;
+    }
 
     return (
         <>
